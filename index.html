@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Tableau de Bord</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Tableau de Bord pour la surveillance de la chaîne de production">
+  <meta name="keywords" content="tableau de bord, surveillance, production, capteurs, KPIs, alertes">
+  <meta name="author" content="Bucky Maler">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <!-- Add Chart.js for dynamic graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Style pour la grille */
+    .graph-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 colonnes */
+      gap: 20px; /* Espace entre les graphiques */
+      margin-top: 20px;
+    }
+    .graph-container {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .graph-container canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    /* Style pour les KPIs */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* 2 colonnes */
+      gap: 20px; /* Espace entre les KPIs */
+      margin-top: 20px;
+    }
+    .kpi-card {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .kpi-card h3 {
+      margin: 0;
+      font-size: 1.5em;
+      color: #333;
+    }
+    .kpi-card p {
+      margin: 10px 0 0;
+      font-size: 2em;
+      color: #555;
+    }
+
+    /* Style pour les alertes */
+    .alert-section {
+      margin-top: 20px;
+      display: none; /* Cacher la section des alertes par défaut */
+    }
+    .alert-grid {
+      display: flex;
+      flex-direction: column; /* Disposition verticale */
+      gap: 10px; /* Espace entre les cartes d'alerte */
+    }
+    .alert-card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid #ff4d4d; /* Rouge par défaut */
+      width: 100%; /* Prend toute la largeur disponible */
+    }
+    .alert-card h3 {
+      margin: 0;
+      font-size: 1.2em;
+      color: #333;
+    }
+    .alert-card p {
+      margin: 5px 0 0;
+      font-size: 0.9em;
+      color: #666;
+    }
+    .alert-card .alert-date {
+      font-size: 0.8em;
+      color: #999;
+    }
+    .alert-card.critical {
+      border-left-color: #ff4d4d; /* Rouge pour les alertes critiques */
+    }
+    .alert-card.warning {
+      border-left-color: #ffcc00; /* Jaune pour les avertissements */
+    }
+    .alert-card.info {
+      border-left-color: #4d94ff; /* Bleu pour les informations */
+    }
+  </style>
+</head>
+<body>
+
+<!-- notification for small viewports and landscape oriented smartphones -->
+<div class="device-notification">
+  <a class="device-notification--logo" href="#0">
+    <img src="assets/img/logo.png" alt="Global">
+    <p>Global</p>
+  </a>
+  <p class="device-notification--message">Global has so much to offer that we must request you orient your device to portrait or find a larger screen. You won't be disappointed.</p>
+</div>
+
+<div class="perspective effect-rotate-left">
+  <div class="container"><div class="outer-nav--return"></div>
+    <div id="viewport" class="l-viewport">
+      <div class="l-wrapper">
+        <header class="header">
+          <a class="header--logo" href="#0">
+            <img src="assets/img/logo.png" alt="Global">
+            <p>Global</p>
+          </a>
+          <button class="header--cta cta">Hire Us</button>
+          <div class="header--nav-toggle">
+            <span></span>
+          </div>
+        </header>
+        <nav class="l-side-nav">
+          <ul class="side-nav">
+            <li class="is-active"><span>Tableau de Bord</span></li>
+            <li><span>Works</span></li>
+            <li><span>About</span></li>
+            <li><span>Contact</span></li>
+            <li><span>Hire us</span></li>
+          </ul>
+        </nav>
+        <ul class="l-main-content main-content">
+          <li class="l-section section section--is-active">
+            <div class="intro">
+              <div class="intro--banner">
+                <h1>Tableau de Bord<br>Vue Principale</h1>
+                <button class="cta">Voir les Alertes
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 150 118" style="enable-background:new 0 0 150 118;" xml:space="preserve">
+                  <g transform="translate(0.000000,118.000000) scale(0.100000,-0.100000)">
+                    <path d="M870,1167c-34-17-55-57-46-90c3-15,81-100,194-211l187-185l-565-1c-431,0-571-3-590-13c-55-28-64-94-18-137c21-20,33-20,597-20h575l-192-193C800,103,794,94,849,39c20-20,39-29,61-29c28,0,63,30,298,262c147,144,272,271,279,282c30,51,23,60-219,304C947,1180,926,1196,870,1167z"/>
+                  </g>
+                  </svg>
+                  <span class="btn-background"></span>
+                </button>
+                <img src="assets/img/introduction-visual.jpg" alt="Tableau de Bord">
+              </div>
+              <div class="intro--options">
+                <a href="#0" id="show-graphs">
+                  <h3>Graphiques Dynamiques</h3>
+                  <p>Visualisez les données des capteurs en temps réel (température, humidité, vibrations).</p>
+                </a>
+                <a href="#0" id="show-kpis">
+                  <h3>Indicateurs de Performance</h3>
+                  <p>Suivez les KPIs tels que l'efficacité de production et le temps de fonctionnement des machines.</p>
+                </a>
+                <a href="#0" id="show-alerts">
+                  <h3>Alertes et Anomalies</h3>
+                  <p>Recevez des alertes en temps réel pour les anomalies et problèmes système.</p>
+                </a>
+              </div>
+              <!-- Graph Section -->
+              <div id="graph-section" style="display: none;">
+                <h2>Graphiques des Capteurs</h2>
+                <div class="graph-grid">
+                  <div class="graph-container">
+                    <canvas id="temperatureChart"></canvas>
+                  </div>
+                  <div class="graph-container">
+                    <canvas id="humidityChart"></canvas>
+                  </div>
+                  <div class="graph-container">
+                    <canvas id="vibrationChart"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- KPI Section -->
+              <div id="kpi-section" style="display: none;">
+                <h2>Indicateurs de Performance Clés (KPIs)</h2>
+                <div class="kpi-grid">
+                  <div class="kpi-card">
+                    <h3>Efficacité de Production</h3>
+                    <p id="efficiency">85%</p>
+                  </div>
+                  <div class="kpi-card">
+                    <h3>Temps de Fonctionnement</h3>
+                    <p id="uptime">95%</p>
+                  </div>
+                </div>
+              </div>
+              <!-- Alert Section -->
+              <div id="alert-section" style="display: none;">
+                <h2>Alertes et Anomalies</h2>
+                <div class="alert-grid">
+                  <div class="alert-card critical">
+                    <h3>Anomalie Critique</h3>
+                    <p>Température élevée détectée sur la machine 1.</p>
+                    <p class="alert-date">2023-10-25 14:30</p>
+                  </div>
+                  <div class="alert-card warning">
+                    <h3>Avertissement</h3>
+                    <p>Vibrations anormales détectées sur la machine 2.</p>
+                    <p class="alert-date">2023-10-25 14:15</p>
+                  </div>
+                  <div class="alert-card info">
+                    <h3>Information</h3>
+                    <p>Maintenance préventive planifiée pour la machine 3.</p>
+                    <p class="alert-date">2023-10-25 13:45</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <!-- Other sections remain unchanged -->
+        </ul>
+      </div>
+    </div>
+  </div>
+  <ul class="outer-nav">
+    <li class="is-active">Tableau de Bord</li>
+    <li>Works</li>
+    <li>About</li>
+    <li>Contact</li>
+    <li>Hire us</li>
+  </ul>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="assets/js/vendor/jquery-2.2.4.min.js"><\/script>')</script>
+<script src="assets/js/functions-min.js"></script>
+<script>
+  $(document).ready(function () {
+    // Handle click on "Graphiques Dynamiques"
+    $('#show-graphs').on('click', function (e) {
+      e.preventDefault(); // Prevent default link behavior
+      $('#graph-section').show(); // Show the graph section
+      $('#kpi-section').hide(); // Hide the KPI section
+      $('#alert-section').hide(); // Hide the alert section
+
+      // Example data for the charts (replace with real-time data from your backend)
+      const labels = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00'];
+      const temperatureData = [22, 23, 24, 25, 26, 27, 28];
+      const humidityData = [50, 52, 54, 56, 58, 60, 62];
+      const vibrationData = [0.1, 0.2, 0.15, 0.3, 0.25, 0.35, 0.4];
+
+      // Temperature Chart
+      const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
+      new Chart(temperatureCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Température (°C)',
+            data: temperatureData,
+            borderColor: 'rgba(255, 99, 132, 1)', // Red
+            borderWidth: 2,
+            fill: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: false,
+            }
+          }
+        }
+      });
+
+      // Humidity Chart
+      const humidityCtx = document.getElementById('humidityChart').getContext('2d');
+      new Chart(humidityCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Humidité (%)',
+            data: humidityData,
+            borderColor: 'rgba(54, 162, 235, 1)', // Blue
+            borderWidth: 2,
+            fill: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: false,
+            }
+          }
+        }
+      });
+
+      // Vibration Chart
+      const vibrationCtx = document.getElementById('vibrationChart').getContext('2d');
+      new Chart(vibrationCtx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Vibrations (m/s²)',
+            data: vibrationData,
+            borderColor: 'rgba(75, 192, 192, 1)', // Green
+            borderWidth: 2,
+            fill: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: false,
+            }
+          }
+        }
+      });
+    });
+
+    // Handle click on "Indicateurs de Performance"
+    $('#show-kpis').on('click', function (e) {
+      e.preventDefault(); // Prevent default link behavior
+      $('#kpi-section').show(); // Show the KPI section
+      $('#graph-section').hide(); // Hide the graph section
+      $('#alert-section').hide(); // Hide the alert section
+
+      // Example KPI data (replace with real-time data from your backend)
+      const efficiency = 85; // Efficacité de production en %
+      const uptime = 95; // Temps de fonctionnement en %
+
+      // Update KPI values
+      $('#efficiency').text(`${efficiency}%`);
+      $('#uptime').text(`${uptime}%`);
+    });
+
+    // Handle click on "Alertes et Anomalies"
+    $('#show-alerts').on('click', function (e) {
+      e.preventDefault(); // Prevent default link behavior
+      $('#alert-section').show(); // Show the alert section
+      $('#graph-section').hide(); // Hide the graph section
+      $('#kpi-section').hide(); // Hide the KPI section
+    });
+  });
+</script>
+</body>
+</html>
